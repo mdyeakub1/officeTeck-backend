@@ -1,0 +1,1 @@
+export const employeeSearchableFields: string[] = ['title'];
