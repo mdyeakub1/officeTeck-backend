@@ -49,9 +49,9 @@ const getAllProject = async (filters:any, options:any): Promise<IGenericResponse
         },
         skip,
         take: limit,
-        // orderBy: {
-        //     createdAt: 'desc'
-        // }
+        orderBy: {
+            createdAt: 'desc'
+        }
     })
     const total = await prisma.project.count()
    

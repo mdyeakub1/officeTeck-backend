@@ -4,23 +4,34 @@ import { paginationHelpers } from "../../../helpers/paginationHelper";
 
 const prisma = new PrismaClient()
 
-const createEmployeeProject = async (Data: EmployeeProject): Promise<EmployeeProject> => {
-    const existingAssignment = await prisma.employeeProject.findFirst({
-        where: {
-            projectId: Data.projectId,
-            employeeId: Data.employeeId,
-        },
+const createEmployeeProject = async (data: EmployeeProject): Promise<EmployeeProject> => {
+    // Start a transaction
+    return prisma.$transaction(async (prisma) => {
+        const existingAssignment = await prisma.employeeProject.findFirst({
+            where: {
+                projectId: data.projectId,
+                employeeId: data.employeeId,
+            },
+        });
+
+        if (existingAssignment) {
+            throw new Error("Project already assigned to the employee");
+        }
+
+        // Assuming you want to update the projectStatus to "Assigned" when creating an EmployeeProject
+        await prisma.employee.update({
+            where: { id: data.employeeId },
+            data: { projectStatus: "Assigned" },
+        });
+
+        const result = await prisma.employeeProject.create({
+            data: data,
+        });
+
+        return result;
     });
+};
 
-    if (existingAssignment) {
-        throw new Error("Project already assigned to the employee");
-    }
-    const result = await prisma.employeeProject.create({
-        data: Data
-    })
-
-    return result
-}
 
 const getAllEmployeeProject = async (filters:any, options:any): Promise<IGenericResponse<EmployeeProject[]>> => {
 

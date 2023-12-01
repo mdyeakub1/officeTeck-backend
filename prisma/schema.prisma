@@ -39,6 +39,8 @@ model Employee {
   passportNumber  String?
   image           String?   // Assuming storing image path; adjust as needed
   bio             String?
+  projectStatus String? @default("Not Assigned")
+  assetStatus String? @default("Not Assigned")
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
