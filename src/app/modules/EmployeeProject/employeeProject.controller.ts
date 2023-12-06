@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from "express";
-import pick from "../../../shared/pick";
 import { EmployeeProjectService } from "./employeeProject.services";
 
 const createEmployeeProject =async (req: Request, res: Response, next: NextFunction) => {
@@ -18,15 +17,16 @@ const createEmployeeProject =async (req: Request, res: Response, next: NextFunct
 const getAllEmployeeProject = async (req: Request, res: Response, next: NextFunction) => {
     try {
 
-        const filters = pick(req.query, ['searchTerm'])
-        const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder'])
+        const searchTerm = req.query
+
+        console.log({searchTerm})
+
         
-        const result = await EmployeeProjectService.getAllEmployeeProject(filters,options)
+        const result = await EmployeeProjectService.getAllEmployeeProject(searchTerm)
         res.status(200).json({
             status: 'success',
             message: 'Project retrived successfully',
-            meta: result.meta,
-            data: result.data
+            data: result
         });
     } catch (error) {
         next(error)

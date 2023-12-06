@@ -1,6 +1,4 @@
 import { PrismaClient, EmployeeProject } from "@prisma/client";
-import { IGenericResponse } from "../../../interfaces/common";
-import { paginationHelpers } from "../../../helpers/paginationHelper";
 
 const prisma = new PrismaClient()
 
@@ -33,45 +31,35 @@ const createEmployeeProject = async (data: EmployeeProject): Promise<EmployeePro
 };
 
 
-const getAllEmployeeProject = async (filters:any, options:any): Promise<IGenericResponse<EmployeeProject[]>> => {
+const getAllEmployeeProject = async (searchTerm:any): Promise<EmployeeProject[]> => {
 
-    const { page, limit, skip } = paginationHelpers.calculatePagination(options)
-    const { searchTerm } = filters
-    
+
     let whereClause = {}
 
     if (searchTerm) {
         whereClause = {
             OR: [
                 {
-                    name: {
+                    projectId: {
                         contains: searchTerm,
                         mode: 'insensitive'
                     }
                 }
-            ]
+            ],
+            
         }
     }
     
 
     const result = await prisma.employeeProject.findMany({
         where: whereClause,
-        skip,
-        take: limit,
         // orderBy: {
         //     createdAt: 'desc'
         // }
     })
-    const total = await prisma.project.count()
    
-    return {
-        meta: {
-            total,
-            page,
-            limit
-        },
-        data: result
-    }
+    return result
+
 }
 
 const getSingleEmployeeProject = async (id: string): Promise<EmployeeProject | null> => {
