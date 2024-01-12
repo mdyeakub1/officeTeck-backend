@@ -1,5 +1,5 @@
 
-# OfficeTeck
+# OfficeTeck Backend
 officeTech is a simple office management system
 ![image description](src/assets/images/officeTeck-cover.png)
 
